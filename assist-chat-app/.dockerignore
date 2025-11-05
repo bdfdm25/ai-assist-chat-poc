@@ -1,0 +1,12 @@
+node_modules
+npm - debug.log
+dist
+coverage
+  .angular
+  .git
+  .gitignore
+README.md
+REFACTORING_SUMMARY.md
+TESTING.md
+  .editorconfig
+  .vscode

@@ -1,0 +1,52 @@
+<div
+  [ngClass]="{
+    'flex justify-end': isUser,
+    'flex justify-start': isAssistant
+  }"
+  class="animate-fadeIn"
+>
+  <div
+    [ngClass]="{
+      'bg-[#ff882e] text-[#373A40]': isUser,
+      'bg-[#d6d6d6] text-[#373A40]': isAssistant
+    }"
+    class="max-w-[80%] md:max-w-[70%] rounded-lg px-4 py-3 shadow-sm border mb-6"
+  >
+    <!-- Message Header -->
+    <div class="flex items-center gap-2 mb-2">
+      <span class="text-base"> {{ isUser ? "👤" : "🤖" }} </span>
+      <span
+        [ngClass]="{
+          'text-black': isUser,
+          'text-gray-800': isAssistant
+        }"
+        class="text-xs font-medium uppercase tracking-wide"
+      >
+        {{ isUser ? "You" : "Assist" }}
+      </span>
+    </div>
+
+    <!-- Message Content -->
+    <div class="text-sm leading-relaxed whitespace-pre-wrap break-words">
+      {{ message.content }}
+
+      <!-- Streaming Cursor -->
+      @if (message.isStreaming) {
+      <span
+        class="inline-block w-0.5 h-4 ml-1 bg-current animate-cursor-blink"
+      ></span>
+      }
+    </div>
+
+    <!-- Timestamp -->
+    <div
+      [ngClass]="{
+        'text-primary-200': isUser,
+        'text-gray-500': isAssistant
+      }"
+      class="text-xs mt-2 text-right"
+    >
+      {{ formattedTime }}
+    </div>
+  </div>
+</div>

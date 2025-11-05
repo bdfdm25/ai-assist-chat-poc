@@ -1,0 +1,117 @@
+<div class="flex flex-col h-screen bg-[#EEEEEE] text-[#373A40]">
+  <!-- Header -->
+  <header class="bg-[#373A40] border-b border-[#373A40] shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-semibold text-[#EEEEEE] flex items-center gap-2">
+        <span class="text-3xl">💬</span>
+        Assist Chat
+      </h1>
+
+      <div class="flex items-center gap-4">
+        <!-- Connection Status -->
+        <div
+          [ngClass]="{
+            'bg-green-50 text-green-700':
+              connectionState() === ConnectionState.CONNECTED,
+            'bg-yellow-50 text-yellow-700':
+              connectionState() === ConnectionState.CONNECTING ||
+              connectionState() === ConnectionState.RECONNECTING,
+            'bg-red-50 text-red-700':
+              connectionState() === ConnectionState.DISCONNECTED ||
+              connectionState() === ConnectionState.ERROR
+          }"
+          class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+        >
+          <span
+            [ngClass]="{
+              'bg-green-500': connectionState() === ConnectionState.CONNECTED,
+              'bg-yellow-500':
+                connectionState() === ConnectionState.CONNECTING ||
+                connectionState() === ConnectionState.RECONNECTING,
+              'bg-red-500':
+                connectionState() === ConnectionState.DISCONNECTED ||
+                connectionState() === ConnectionState.ERROR
+            }"
+            class="w-2 h-2 rounded-full animate-pulse"
+          ></span>
+          <span>{{ connectionStatusText }}</span>
+        </div>
+
+        <!-- Clear Button -->
+        @if (hasMessages()) {
+        <button
+          (click)="onClearChat()"
+          title="Clear chat"
+          class="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors"
+        >
+          <span>🗑️</span>
+          <span>Clear</span>
+        </button>
+        }
+      </div>
+    </div>
+  </header>
+
+  <!-- Error Banner -->
+  @if (error()) {
+  <div
+    class="bg-red-50 border-b border-red-200 px-6 py-3 flex items-center gap-3"
+  >
+    <span class="text-xl">⚠️</span>
+    <span class="flex-1 text-red-800 text-sm">{{ error() }}</span>
+    <button
+      (click)="onDismissError()"
+      class="w-6 h-6 flex items-center justify-center text-red-800 hover:bg-red-100 rounded transition-colors text-xl font-bold"
+    >
+      ×
+    </button>
+  </div>
+  }
+
+  <!-- Messages Area -->
+  <main class="flex-1 overflow-hidden max-w-7xl w-full mx-auto px-6 py-6">
+    @if (!hasMessages()) {
+    <!-- Empty State -->
+    <div
+      class="h-full flex flex-col items-center justify-center text-center text-[#373A40]"
+    >
+      <div class="text-6xl mb-4">🚀</div>
+      <h2 class="text-3xl font-semibold mb-2">Welcome to Assist Chat</h2>
+      <p class="text-lg opacity-90 mb-8">
+        Start a conversation by typing a message below.
+      </p>
+
+      <div class="space-y-4">
+        <p class="text-sm opacity-80">Try asking:</p>
+        <button
+          (click)="onSendMessage('What is Assist Chat?')"
+          class="block mx-auto px-6 py-3 bg-[#686D76] border rounded-xl text-[#EEEEEE] text-sm hover:bg-[#373A40] hover:-translate-y-0.5 transition-all"
+        >
+          What is Assist Chat?
+        </button>
+        <button
+          (click)="onSendMessage('How can you help real state agents?')"
+          class="block mx-auto px-6 py-3 bg-[#686D76] backdrop-blur-md border border-gray-500 rounded-xl text-[#EEEEEE] text-sm hover:bg-[#373A40] hover:-translate-y-0.5 transition-all"
+        >
+          How can you help real state agents?
+        </button>
+      </div>
+    </div>
+    } @else {
+    <app-message-list [messages]="messages()" />
+    }
+  </main>
+
+  <!-- Input Footer -->
+  <footer class="bg-[#373A40] border-t border-[#373A40]">
+    <div class="max-w-7xl mx-auto px-6 py-4">
+      <app-message-input
+        [disabled]="
+          connectionState() !== ConnectionState.CONNECTED || isLoading()
+        "
+        [isLoading]="isLoading()"
+        (sendMessage)="onSendMessage($event)"
+      />
+    </div>
+  </footer>
+</div>
